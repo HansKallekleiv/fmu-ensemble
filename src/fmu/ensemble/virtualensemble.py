@@ -9,7 +9,7 @@ import os
 import re
 import shutil
 import fnmatch
-import datetime
+import time
 
 import six
 import yaml
@@ -647,7 +647,7 @@ file is picked up"""
             lazy_load (bool): If True, loading of dataframes from disk
                 will be postponed until get_df() is actually called.
         """
-        start_time = datetime.datetime.now()
+        start_time = time.time()
         if fmt not in ["csv", "parquet"]:
             raise ValueError("Unknown format for from_disk: %s" % fmt)
 
@@ -723,7 +723,7 @@ file is picked up"""
         # IT MIGHT BE INCORRECT IF LAZY_LOAD...
         self.update_realindices()
 
-        end_time = datetime.datetime.now()
+        end_time = time.time()
         if lazy_load:
             lazy_str = "(lazy) "
         else:
@@ -731,7 +731,7 @@ file is picked up"""
         logger.info(
             "Loading ensemble from disk %stook %g seconds",
             lazy_str,
-            (end_time - start_time).total_seconds(),
+            end_time - start_time,
         )
 
     def _load_frame_fromdisk(self, key, filename):
@@ -1023,7 +1023,7 @@ file is picked up"""
             self.get_df("__smry_metadata")
             .set_index("SMRYCOLUMN")
             .loc[matches, :]
-            .replace({pd.np.nan: None})
+            .replace({np.nan: None})
             .to_dict(orient="index")
         )
 
